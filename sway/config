@@ -1,0 +1,362 @@
+# Logo key. Use Mod1 for Alt.
+set $mod Mod4
+
+
+bindsym Mod1+f      exec firefox
+bindsym Mod1+v      exec vivaldi
+bindsym Mod1+s      exec spotify
+bindsym Mod1+e      exec nautilus
+bindsym Mod1+c      exec grim -g "$(slurp)" - | wl-copy
+
+
+# Home row direction keys, like vim
+set $left h
+set $down j
+set $up k
+set $right l
+
+# Your preferred terminal emulators
+set $term-float kitty
+set $highlight #1e1e1e
+set $uifont "DejavuSans Mono 10"
+
+output * bg #008080 solid_color
+output HDMI-A-1 mode 1920x1080@143.981Hz
+
+# Your preferred application launcher
+# Note: pass the final command to swaymsg so that the resulting window can be opened
+# on the original workspace that the command was run on.
+set $menu wofi -c ~/.config/wofi/config -I
+
+input type:keyboard {
+    xkb_layout be,us
+    xkb_options grp:rctrl_toggle
+}
+
+input type:keyboard {
+      xkb_layout be,us
+      xkb_options grp:rctrl_toggle
+}
+
+
+### Idle configuration
+exec swayidle -w\
+    timeout 1070 'swaylock -f -C ~/.config/swaylock/config'\
+    timeout 770 'swaymsg "output * dpms off"' \
+    resume 'swaymsg "output * dpms on"' \
+    before-sleep 'swaylock -C ~/.config/swaylock/config' \
+# This will lock your screen after 300 seconds of inactivity, then turn off
+# your displays after another 300 seconds, and turn your screens back on when
+# resumed. It will also lock your screen before your computer goes to sleep.
+
+## Lock Screen
+    bindsym Mod1+l exec ~/.config/sway/scripts/lockman.sh
+
+### Key bindings
+#
+# Basics:
+#
+    # Start a floating terminal
+    bindsym $mod+Return exec $term-float
+
+    # Kill focused window
+    bindsym $mod+w kill
+
+    # Start your launcher
+    bindsym $mod+d exec $menu
+    #bindsym menu exec ~/.config/sway/scripts/wofitoggle.sh
+
+    # Activities
+    bindsym $mod+tab exec ~/.config/wofi/windows.py
+
+    # Drag floating windows by holding down $mod and left mouse button.
+    # Resize them with right mouse button + $mod.
+    # Despite the name, also works for non-floating windows.
+    # Change normal to inverse to use left mouse button for resizing and right
+    # mouse button for dragging.
+    floating_modifier $mod normal
+
+    # Reload the configuration file
+    bindsym $mod+Shift+r reload
+
+#
+# Moving around:
+#
+    # Move your focus around
+    bindsym $mod+$left focus left
+    bindsym $mod+$down focus down
+    bindsym $mod+$up focus up
+    bindsym $mod+$right focus right
+    # Or use $mod+[up|down|left|right]
+    bindsym $mod+Left focus left
+    bindsym $mod+Down focus down
+    bindsym $mod+Up focus up
+    bindsym $mod+Right focus right
+
+    # Move the focused window with the same, but add Shift
+    bindsym $mod+Shift+$left move left
+    bindsym $mod+Shift+$down move down
+    bindsym $mod+Shift+$up move up
+    bindsym $mod+Shift+$right move right
+    # Ditto, with arrow keys
+    bindsym $mod+Shift+Left move left
+    bindsym $mod+Shift+Down move down
+    bindsym $mod+Shift+Up move up
+    bindsym $mod+Shift+Right move right
+#
+# Workspaces:
+#
+
+    # Define names for default workspaces for which we configure key bindings later on.
+    # We use variables to avoid repeating the names in multiple places.
+    set $ws1 1: 
+    set $ws2 2: 
+    set $ws3 3: 
+    set $ws4 4: 
+    set $ws5 5: 
+    set $ws6 6: 6
+    set $ws7 7: 7
+    set $ws8 8: 8
+    set $ws9 9: 9
+    set $ws10 10: 10
+
+    bindsym $mod+ampersand workspace 1
+    bindsym $mod+eacute workspace 2
+    bindsym $mod+quotedbl workspace 3
+    bindsym $mod+apostrophe workspace 4
+    bindsym $mod+parenleft workspace 5
+    bindsym $mod+egrave workspace 6
+    bindsym $mod+minus workspace 7
+    bindsym $mod+underscore workspace 8
+    bindsym $mod+ccedilla workspace 9
+    bindsym $mod+agrave workspace 10
+
+    bindsym $mod+Shift+ampersand move container to workspace 1
+    bindsym $mod+Shift+eacute move container to workspace 2
+    bindsym $mod+Shift+quotedbl move container to workspace 3
+    bindsym $mod+Shift+apostrophe move container to workspace 4
+    bindsym $mod+Shift+parenleft move container to workspace 5
+    bindsym $mod+Shift+egrave move container to workspace 6
+    bindsym $mod+Shift+minus move container to workspace 7
+    bindsym $mod+Shift+underscore move container to workspace 8
+    bindsym $mod+Shift+ccedilla move container to workspace 9
+    bindsym $mod+Shift+agrave move container to workspace 10
+
+    # switch to workspace
+    bindsym $mod+1    workspace  $ws1
+    bindsym $mod+2    workspace  $ws2
+    bindsym $mod+3    workspace  $ws3
+    bindsym $mod+4    workspace  $ws4
+    bindsym $mod+5    workspace  $ws5
+    bindsym $mod+6    workspace  $ws6
+    bindsym $mod+7    workspace  $ws7
+    bindsym $mod+8    workspace  $ws8
+    bindsym $mod+9    workspace  $ws9
+    bindsym $mod+0    workspace  $ws10
+    # switch to workspace with numpad keys
+    bindcode $mod+87  workspace $ws1
+    bindcode $mod+88  workspace $ws2
+    bindcode $mod+89  workspace $ws3
+    bindcode $mod+83  workspace $ws4
+    bindcode $mod+84  workspace $ws5
+    bindcode $mod+85  workspace $ws6
+    bindcode $mod+79  workspace $ws7
+    bindcode $mod+80  workspace $ws8
+    bindcode $mod+81  workspace $ws9
+    bindcode $mod+90  workspace $ws10
+
+    # switch to workspace with numlock numpad keys
+    bindcode $mod+Mod2+87 workspace $ws1
+    bindcode $mod+Mod2+88 workspace $ws2
+    bindcode $mod+Mod2+89 workspace $ws3
+    bindcode $mod+Mod2+83 workspace $ws4
+    bindcode $mod+Mod2+84 workspace $ws5
+    bindcode $mod+Mod2+85 workspace $ws6
+    bindcode $mod+Mod2+79 workspace $ws7
+    bindcode $mod+Mod2+80 workspace $ws8
+    bindcode $mod+Mod2+81 workspace $ws9
+    bindcode $mod+Mod2+90 workspace $ws10
+
+    # Move focused container to workspace
+    bindsym $mod+Shift+1 move container to workspace $ws1
+    bindsym $mod+Shift+2 move container to workspace $ws2
+    bindsym $mod+Shift+3 move container to workspace $ws3
+    bindsym $mod+Shift+4 move container to workspace $ws4
+    bindsym $mod+Shift+5 move container to workspace $ws5
+    bindsym $mod+Shift+6 move container to workspace $ws6
+    bindsym $mod+Shift+7 move container to workspace $ws7
+    bindsym $mod+Shift+8 move container to workspace $ws8
+    bindsym $mod+Shift+9 move container to workspace $ws9
+    bindsym $mod+Shift+0 move container to workspace $ws10
+
+    # move focused container to workspace with numpad keys
+    bindcode $mod+Shift+Mod2+87 	move container to workspace $ws1
+    bindcode $mod+Shift+Mod2+88 	move container to workspace $ws2
+    bindcode $mod+Shift+Mod2+89 	move container to workspace $ws3
+    bindcode $mod+Shift+Mod2+83 	move container to workspace $ws4
+    bindcode $mod+Shift+Mod2+84 	move container to workspace $ws5
+    bindcode $mod+Shift+Mod2+85 	move container to workspace $ws6
+    bindcode $mod+Shift+Mod2+79 	move container to workspace $ws7
+    bindcode $mod+Shift+Mod2+80 	move container to workspace $ws8
+    bindcode $mod+Shift+Mod2+81 	move container to workspace $ws9
+    bindcode $mod+Shift+Mod2+90 	move container to workspace $ws10
+
+    # move focused container to workspace with numpad keys
+    bindcode $mod+Shift+87 	 move container to workspace $ws1
+    bindcode $mod+Shift+88 	 move container to workspace $ws2
+    bindcode $mod+Shift+89 	 move container to workspace $ws3
+    bindcode $mod+Shift+83 	 move container to workspace $ws4
+    bindcode $mod+Shift+84 	 move container to workspace $ws5
+    bindcode $mod+Shift+85 	 move container to workspace $ws6
+    bindcode $mod+Shift+79 	 move container to workspace $ws7
+    bindcode $mod+Shift+80 	 move container to workspace $ws8
+    bindcode $mod+Shift+81 	 move container to workspace $ws9
+    bindcode $mod+Shift+90 	 move container to workspace $ws10
+
+    # Note: workspaces can have any name you want, not just numbers.
+    # We just use 1-10 as the default.
+
+    assign [app_id="firefox"] workspace 2
+    assign [app_id="vivaldi"] workspace 2
+
+#
+# Layout stuff:
+#
+    # You can "split" the current object of your focus with
+    # $mod+b or $mod+v, for horizontal and vertical splits
+    # respectively.
+    bindsym $mod+b splith
+    bindsym $mod+v splitv
+
+    # Switch the current container between different layout styles
+    bindsym $mod+s layout stacking
+    bindsym $mod+t layout tabbed
+    bindsym $mod+e layout toggle split
+
+    # Make the current focus fullscreen
+    bindsym $mod+f fullscreen
+
+    # Toggle the current focus between tiling and floating mode
+    bindsym $mod+space floating toggle
+
+    # Swap focus between the tiling area and the floating area
+    #bindsym $mod+space focus mode_toggle
+
+    # Move focus to the parent container
+    bindsym $mod+a focus parent
+
+    smart_gaps on
+    gaps inner 10
+
+
+#
+# Scratchpad:
+#
+    # Sway has a "scratchpad", which is a bag of holding for windows.
+    # You can send windows there and get them back later.
+
+    # Move the currently focused window to the scratchpad
+    # bindsym $mod+Shift+minus move scratchpad
+
+    # Show the next scratchpad window or hide the focused scratchpad window.
+    # If there are multiple scratchpad windows, this command cycles through them.
+    # bindsym $mod+minus scratchpad show
+#
+# Resizing containers:
+#
+mode "resize" {
+    # left will shrink the containers width
+    # right will grow the containers width
+    # up will shrink the containers height
+    # down will grow the containers height
+    bindsym $left resize shrink width 10px
+    bindsym $right resize grow width 10px
+    bindsym $up resize shrink height 10px
+    bindsym $down resize grow height 10px
+
+    # Ditto, with arrow keys
+    bindsym Left resize shrink width 10px
+    bindsym Right resize grow width 10px
+    bindsym Up resize shrink height 10px
+    bindsym Down resize grow height 10px
+
+    # Return to default mode
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+# Resize floating windows with mouse scroll:
+    bindsym --whole-window --border $mod+button4 resize shrink height 5 px or 5 ppt
+    bindsym --whole-window --border $mod+button5 resize grow height 5 px or 5 ppt
+    bindsym --whole-window --border $mod+Shift+button4 resize shrink width 5 px or 5 ppt
+    bindsym --whole-window --border $mod+Shift+button5 resize grow width 5 px or 5 ppt
+
+
+#
+# Bar
+#
+exec_always waybar
+#bar {
+#    # mode hide
+#    hidden_state hide
+#    modifier $mod
+#    font $uifont
+
+#    # When the status_command prints a new line to stdout, swaybar updates.
+#    # The default just shows the current date and time.
+#    status_command while date +'%-d-%-m-%Y %H:%M:%S '; do sleep 1; done
+
+#    colors {
+#        statusline #ffffff
+#        background #000000
+#        #background #00000000
+#        focused_workspace #121212 $highlight #c6c6c6
+#        active_workspace #121212 $highlight #c6c6c6
+#        inactive_workspace #121212 #000000 #c6c6c6
+#    }
+#}
+
+#
+# Border
+#
+# class                 border  backgr. text    indicator child_border
+client.focused          $highlight $highlight #ffffff $highlight   $highlight
+client.focused_inactive $highlight #5f676a #ffffff $highlight   $highlight
+client.unfocused        $highlight #222222 #888888 $highlight  $highlight
+client.urgent           #2f343a #900000 #ffffff #900000   #900000
+client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+
+
+
+
+# Volume
+#
+
+# Pulse Audio controls
+    bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
+    bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
+    bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+    # Media player controls
+    bindsym XF86AudioPlay exec playerctl play-pause
+    bindsym XF86AudioNext exec playerctl next
+    bindsym XF86AudioPrev exec playerctl previous
+
+
+#
+# Backlight
+#
+    bindsym XF86MonBrightnessUp exec brightnessctl -c backlight set +5%
+    bindsym XF86MonBrightnessDown exec brightnessctl -c backlight set 5%-
+#
+# App shortcuts
+# Screenshots
+    bindsym Print exec grim -o $(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name') $(xdg-user-dir)/Pictures/Screenshot_$(date +'%Y-%m-%d-%H%M%S.png')
+    bindsym Alt+Print exec grim $(xdg-user-dir)/Pictures/Screenshot_$(date +'%Y-%m-%d-%H%M%S.png')
+    bindsym Control+Print exec grim -g "$(slurp)" $(xdg-user-dir)/Pictures/Screenshot_$(date +'%Y-%m-%d-%H%M%S.png')
+    bindsym Shift+Print exec grim -g "$(slurp)" - | wl-copy
+#
+# Keybindings List
+#
+    bindsym $mod+o exec xed ~/.config/sway/cheatsheet

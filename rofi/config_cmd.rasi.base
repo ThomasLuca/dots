@@ -1,0 +1,79 @@
+/**
+ * ROFI Color theme
+ * User: mbfraga
+ * Copyright: Martin B. Fraga
+ * Modified by machaerus (https://gitlab.com/machaerus/dotfiles)
+ */
+
+/* global settings and color variables */
+* {{
+   blackdarkest:     {color0};
+   maincolor:        {color3};
+   bodycolor:        {color7};
+   selectedcolor:    {color3};
+   highlight:        bold {color2};
+   urgentcolor:      {color1};
+   font: "Roboto Mono Regular 11";
+   background-color: @blackdarkest;
+   text-color: @bodycolor;
+   spacing: 0px;
+   border: 0px;
+}}
+
+window {{
+   background-color: @blackdarkest;
+   border: 0px;
+   margin: 0px 0px 0px 0px;
+   anchor: south;
+   location: south;
+   width: 100%;
+   height: 42px;
+   children: [ horibox ];
+}}
+
+horibox {{
+    orientation: horizontal;
+    children:   [ textbox-prpt, entry, listview ];
+}}
+
+listview {{
+    layout:     horizontal;
+    spacing:    5px;
+    lines:      5;
+    text-color: @bodycolor;
+}}
+
+textbox-prpt {{
+  expand: false;
+  content: " RUN";
+  padding: 8px 18px 5px 20px;
+  text-color: @maincolor;
+}}
+
+prompt {{
+   enabled: true;
+   padding: 8px 18px 5px 20px;
+   text-color: @maincolor;
+}}
+
+entry {{
+    expand:     false;
+    padding: 8px 0 0 0;
+    width:      20em;
+    text-color: @bodycolor;
+}}
+
+element {{
+    padding: 8px 5px;
+    text-color: @bodycolor;
+}}
+
+element selected {{
+    background-color: @selectedcolor;
+}}
+
+element-text selected {{
+    background-color: @selectedcolor;
+    text-color: @blackdarkest;
+}}
+

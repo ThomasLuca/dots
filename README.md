@@ -4,6 +4,7 @@
 
 ```bash
 curl -sS https://starship.rs/install.sh | sh
+sudo dnf install bash-completion
 ```
 
 ## Nvim
