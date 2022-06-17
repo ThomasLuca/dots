@@ -1,5 +1,9 @@
 # Dots
 
+## Example
+
+![Screenshot sway](./img/Screenshot_2022-06-17-184639.png)
+
 ## Bash
 
 ```bash
@@ -20,3 +24,4 @@ chmod u+x nvim.appimage
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/installer/install.sh)
 ```
+
