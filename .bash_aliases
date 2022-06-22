@@ -1,7 +1,7 @@
 alias ls='ls --color=auto'
-alias ll='ls -lav --ignore=..'   # show long listing of all except ".."
+alias ll='ls -lav --ignore=.?*'   # show long listing of all except ".."
 alias l='ls -lav --ignore=.?*'   # show long listing but no hidden dotfiles except "."
-alias la='ls -la --ignore=.?*'   # show long listing but no hidden dotfiles except "."
+alias la='ls -la'   # show long listing but no hidden dotfiles except "."
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
@@ -18,4 +18,10 @@ alias nf='neofetch'
 alias c='clear'
 alias q='exit'
 alias clock='tty-clock'
+
+alias code='flatpak run com.visualstudio.code'
+alias mpv='flatpak run io.mpv.Mpv'
+alias discord='flatpak run com.discordapp.discord'
+alias spotify='flatpak run com.spotify.Client'
+alias insomnia='flatpak run rest.insomnia.insomnia'
 
