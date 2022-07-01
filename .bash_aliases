@@ -19,9 +19,11 @@ alias c='clear'
 alias q='exit'
 alias clock='tty-clock'
 
-alias code='flatpak run com.visualstudio.code'
 alias mpv='flatpak run io.mpv.Mpv'
 alias discord='flatpak run com.discordapp.discord'
 alias spotify='flatpak run com.spotify.Client'
 alias insomnia='flatpak run rest.insomnia.insomnia'
+
+alias mic-playback-on='pactl load-module module-loopback latency_msec=1000'
+alias mic-playback-off='pactl unload-module module-loopback'
 
