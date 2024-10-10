@@ -1,115 +1,91 @@
-#
-# ~/.bashrc
-
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
+PS1='[\u@\h \W]\$ '
 
-[[ -f ~/.welcome_screen ]] && . ~/.welcome_screen
+# Define Editor
+export EDITOR=nvim
 
-_set_my_PS1() {
-    PS1='[\u@\h \W]\$ '
-    if [ "$(whoami)" = "liveuser" ] ; then
-        local iso_version="$(grep ^VERSION= /usr/lib/endeavouros-release 2>/dev/null | cut -d '=' -f 2)"
-        if [ -n "$iso_version" ] ; then
-            local prefix="eos-"
-            local iso_info="$prefix$iso_version"
-            PS1="[\u@$iso_info \W]\$ "
-        fi
-    fi
+# -----------------------------------------------------
+# ALIASES
+# -----------------------------------------------------
+alias c='clear'
+alias q='exit'
+alias nf='fastfetch'
+alias pf='fastfetch'
+alias ff='fastfetch'
+alias ls='eza -a --icons'
+alias ll='eza -al --icons'
+alias lt='eza -a --tree --level=1 --icons'
+alias shutdown='systemctl poweroff'
+alias wifi='nmtui'
+alias fcd='cd $(find * -type d | fzf)'
+alias mic-playback-on='pactl load-module module-loopback latency_msec=1000'
+alias mic-playback-off='pactl unload-module module-loopback'
+alias screenshot-copy='grim -g "$(slurp)" - | wl-copy'
+alias screenshot-save='grim -g "$(slurp)" - | wl-copy'
+alias hx='helix'
+alias sf='fastfetch --config examples/8'
+
+# -----------------------------------------------------
+# GIT
+# -----------------------------------------------------
+alias gs="git status"
+alias ga="git add"
+alias gc="git commit -m"
+alias gp="git push"
+alias gpl="git pull"
+alias gst="git stash"
+alias gsp="git stash; git pull"
+alias gcheck="git checkout"
+alias gcredential="git config credential.helper store"
+alias glog='git log --decorate --oneline --graph'
+alias gloog="git log --graph --pretty='''%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
+alias grh='git reset --soft HEAD~1'
+alias gap='git commit --amend --no-edit'
+alias gblame='git blame -w -C -C -C -L'
+
+# -----------------------------------------------------
+# SYSTEM
+# -----------------------------------------------------
+alias update-grub='sudo grub-mkconfig -o /boot/grub/grub.cfg'
+
+# -----------------------------------------------------
+# init bash programs
+# -----------------------------------------------------
+
+eval "$(starship init bash)" # Bash promt
+
+# -----------------------------------------------------
+# Fnctions
+# -----------------------------------------------------
+clean_except() {
+  if [ -z "$1" ]; then
+    echo "Usage: clean_except <extension>"
+    return 1
+  fi
+  find . -maxdepth 1 -type f ! -name "*.$1" -delete
 }
-_set_my_PS1
-unset -f _set_my_PS1
 
-ShowInstallerIsoInfo() {
-    local file=/usr/lib/endeavouros-release
-    if [ -r $file ] ; then
-        cat $file
-    else
-        echo "Sorry, installer ISO info is not available." >&2
-    fi
-}
-
-
-[[ "$(whoami)" = "root" ]] && return
-
-[[ -z "$FUNCNEST" ]] && export FUNCNEST=100          # limits recursive functions, see 'man bash'
-
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+# -----------------------------------------------------
+# Fastfetch if on wm
+# -----------------------------------------------------
+if [[ $(tty) == *"pts"* ]]; then
+  fastfetch --config examples/8
+else
+  echo
+  if [ -f /bin/hyprctl ]; then
+    echo "Start Hyprland with command Hyprland"
+  fi
 fi
-
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-    xterm-color|*-256color) color_prompt=yes;;
-esac
-
-
-
-## Use the up and down arrow keys for finding a command in history
-## (you can write some initial letters of the command first).
-bind '"\e[A":history-search-backward'
-bind '"\e[B":history-search-forward'
-
-#
 . "$HOME/.cargo/env"
 
-function py {
-    python3 -c "from math import *; print($*)"
-}
+export PATH=$HOME/.local/bin:$PATH
+export PATH="/usr/lib/ccache/bin/:$PATH"
 
-function spell() {
-    local candidates oldifs word array_pos
-    oldifs="$IFS"
-    IFS=':'
+if [ -d "/home/dudos/.cargo/bin" ]; then
+  export PATH="/home/dudos/.cargo/bin:$PATH"
+fi
 
-    # Parse the apsell format and return a list of ":" separated words
-    read -a candidates <<< "$(printf "%s\n" "$1" \
-        | aspell -a \
-        | awk -F':' '/^&/ {
-            split($2, a, ",")
-            result=""
-            for (x in a) {
-                gsub(/^[ \t]/, "", a[x])
-                result = a[x] ":" result
-            }
-            gsub(/:$/, "", result)
-            print result
-        }')"
-
-    # Reverse number and print the parsed bash array because the list comes
-    # out of gawk backwards
-    for item in "${candidates[@]}"; do
-        printf '%s\n' "$item"
-    done \
-        | tac \
-        | nl \
-        | less -FirSX
-
-    printf "[ $(tput setaf 2)?$(tput sgr0) ]\t%s" \
-        'Enter the choice (empty to cancel, 0 for input): '
-    read index
-
-    [[ -z "$index" ]] && return
-    [[  "$index" == 0 ]] && word="$1"
-
-    [[ -z "$word" ]] && {
-        array_pos=$(( ${#candidates[@]} - index ))
-        word="${candidates[$array_pos]}"
-    }
-
-    [[ -n "$word" ]] && {
-        printf "$word" | xsel -p
-        printf "Copied '%s' to clipboard!\n" "$word"
-    } || printf "[ $(tput setaf 1):($(tput sgr0) ] %s\n" 'No match found'
-
-
-    IFS="$oldifs"
-}
-
-export PATH=$PATH:$HOME/.local/bin
-eval "$(starship init bash)"
+[[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
+eval "$(atuin init bash)"
+. "/home/dudos/.deno/env"
