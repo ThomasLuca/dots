@@ -25,6 +25,7 @@ alias screenshot-copy='grim -g "$(slurp)" - | wl-copy'
 alias screenshot-save='grim -g "$(slurp)" - | wl-copy'
 alias hx='helix'
 alias sf='fastfetch --config examples/8'
+alias code='flatpak run com.visualstudio.code'
 
 # -----------------------------------------------------
 # GIT
@@ -66,6 +67,48 @@ clean_except() {
   find . -maxdepth 1 -type f ! -name "*.$1" -delete
 }
 
+# Function to automate enabling clangd LSP support
+setup_clangd_lsp() {
+    # Ensure we're in a directory containing a CMakeLists.txt
+    if [[ ! -f "CMakeLists.txt" ]]; then
+        echo "Error: No CMakeLists.txt found in the current directory."
+        return 1
+    fi
+
+    # Check if the compile_commands export line is already present
+    if grep -q 'set(CMAKE_EXPORT_COMPILE_COMMANDS ON)' CMakeLists.txt; then
+        echo '`set(CMAKE_EXPORT_COMPILE_COMMANDS ON)` is already present in CMakeLists.txt.'
+    else
+        echo 'Adding `set(CMAKE_EXPORT_COMPILE_COMMANDS ON)` to CMakeLists.txt...'
+
+        # Insert the line after the `project(...)` line
+        if grep -q '^project(' CMakeLists.txt; then
+            # Use sed to append the line after the `project(...)` declaration
+            sed -i '/^project(/a\
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)' CMakeLists.txt
+        else
+            echo "Warning: No 'project(...)' line found. Adding `set(CMAKE_EXPORT_COMPILE_COMMANDS ON)` to the top of the file."
+            sed -i '1i set(CMAKE_EXPORT_COMPILE_COMMANDS ON)' CMakeLists.txt
+        fi
+    fi
+
+    # Run the cmake command
+    echo "Running cmake to generate compile_commands.json..."
+    cmake -S . -G "Unix Makefiles" -B cmake
+
+    # Check if the compile_commands.json was generated
+    if [[ -f "cmake/compile_commands.json" ]]; then
+        echo "Found compile_commands.json in cmake/ directory. Copying to project root..."
+        cp cmake/compile_commands.json .
+        echo "Successfully copied compile_commands.json to the project root."
+    else
+        echo "Error: compile_commands.json was not generated. Check the CMake configuration."
+        return 1
+    fi
+
+    echo "Clangd LSP setup complete!"
+}
+
 # -----------------------------------------------------
 # Fastfetch if on wm
 # -----------------------------------------------------
@@ -88,4 +131,9 @@ fi
 
 [[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
 eval "$(atuin init bash)"
-. "/home/dudos/.deno/env"
+
+export MANPAGER='nvim +Man!'
+
+export WASMTIME_HOME="$HOME/.wasmtime"
+
+export PATH="$WASMTIME_HOME/bin:$PATH"
